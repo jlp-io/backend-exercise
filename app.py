@@ -59,18 +59,26 @@ def users():
         newUser = db.create('users', data)
         return create_response(data=newUser, status=201)
 
-@app.route('/users/<id>', methods=['GET', 'PUT'])
+@app.route('/users/<id>', methods=['GET', 'PUT', 'DELETE'])
 def users_id(id):
+    userId = int(id)
     if request.method == 'GET':
-        data = db.getById('users',int(id))
+        data = db.getById('users',userId)
         return create_response(status=404, message='User id not found') if data is None else create_response(data)
     elif request.method == 'PUT':
         data = request.get_json()
-        newItem = db.updateById('users', int(id), data)
+        newItem = db.updateById('users', userId, data)
         if newItem is None:
             return create_response(status=404, message='User id not found')
         else:
             return create_response(data=newItem)
+    elif request.method == 'DELETE':
+        if db.getById('users', userId) is None:
+            return create_response(status=404, message='User id not found')
+        else:
+            db.deleteById('users', userId)
+            return create_response(message='User id {} deleted'.format(userId))
+
         
         
 """
