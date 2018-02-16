@@ -59,10 +59,19 @@ def users():
         newUser = db.create('users', data)
         return create_response(data=newUser, status=201)
 
-@app.route('/users/<id>')
+@app.route('/users/<id>', methods=['GET', 'PUT'])
 def users_id(id):
-    data = db.getById('users',int(id))
-    return create_response(status=404, message='User id not found') if data is None else create_response(data)
+    if request.method == 'GET':
+        data = db.getById('users',int(id))
+        return create_response(status=404, message='User id not found') if data is None else create_response(data)
+    elif request.method == 'PUT':
+        data = request.get_json()
+        newItem = db.updateById('users', int(id), data)
+        if newItem is None:
+            return create_response(status=404, message='User id not found')
+        else:
+            return create_response(data=newItem)
+        
         
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
