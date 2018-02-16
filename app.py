@@ -44,7 +44,12 @@ def mirror(name):
 def users():
     data = db.get('users')
     return create_response({'users': data})
-      
+
+@app.route('/users/<id>')
+def users_id(id):
+    data = db.getById('users',int(id))
+    return create_response(status=404, message='User id not found') if data is None else create_response(data)
+        
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
 """
