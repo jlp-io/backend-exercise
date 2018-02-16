@@ -40,15 +40,24 @@ def mirror(name):
 
 # TODO: Implement the rest of the API here!
 
-@app.route('/users')
+@app.route('/users', methods=['GET', 'POST'])
 def users():
-    data = db.get('users')
-    team = request.args.get('team')
-    if team is not None:
-        data = [user for user in data if user['team'] == team]
-    else:
-        data = {'users': data}
-    return create_response(data)
+    if request.method == 'GET':
+        data = db.get('users')
+        team = request.args.get('team')
+        if team is not None:
+            data = [user for user in data if user['team'] == team]
+        else:
+            data = {'users': data}
+        return create_response(data)
+    elif request.method == 'POST':
+        data = request.get_json()
+        try:
+            name, age, team = data['name'], data['age'], data['team']
+        except KeyError:
+            return create_response(status=422, message='User not created; name, age, and team are required.')
+        newUser = db.create('users', data)
+        return create_response(data=newUser, status=201)
 
 @app.route('/users/<id>')
 def users_id(id):
