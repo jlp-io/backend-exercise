@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 import mockdb.mockdb_interface as db
+import json
 
 app = Flask(__name__)
 
@@ -55,9 +56,9 @@ def get_user_by_id(id):
 
 @app.route('/users', methods=['POST'])
 def post_user():
-    name = request.form.get('name')
-    age = request.form.get('age')
-    team = request.form.get('team')
+    name = request.get_json().get('name')
+    age = request.get_json().get('age')
+    team = request.get_json().get('team')
     data = {}
     if name and age and team:
         payload = {'name': name, 'age':age, 'team': team}
