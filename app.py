@@ -47,9 +47,7 @@ def users():
         team = request.args.get('team')
         if team is not None:
             data = [user for user in data if user['team'] == team]
-        else:
-            data = {'users': data}
-        return create_response(data)
+        return create_response({'users': data})
     elif request.method == 'POST':
         data = request.get_json()
         try:
