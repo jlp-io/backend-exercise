@@ -81,8 +81,6 @@ def userById(id):
             db.deleteById('users', int(id))
             return create_response({}, 200, "User deleted successfully")
 
-# TODO: Implement the rest of the API here!
-
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
 """
