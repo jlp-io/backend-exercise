@@ -40,9 +40,15 @@ def mirror(name):
 
 @app.route('/users')
 def users():
-    data = {
-        'users': db.get('users')
-    }
+    if request.args.get('team') is None:
+        data = {
+            'users': db.get('users')
+        }
+    else:
+        matched = [i for i in db.get('users') if i['team'] == request.args.get('team')]
+        data = {
+            'users': matched
+        }
     return create_response(data)
 
 @app.route('/users/<id>')
