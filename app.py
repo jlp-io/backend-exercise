@@ -52,10 +52,13 @@ def users():
             }
         return create_response(data)
     elif request.method == 'POST':
-        payload = {'name': request.form['name'], 'age': request.form['age'], 'team': request.form['team']}
+        input = request.get_json()
+        payload = {'name': input.get('name'),
+                   'age': input.get('age'),
+                   'team': input.get('team')}
         return create_response(db.create('users', payload))
 
-@app.route('/users/<id>', methods = ['GET', 'PUT'])
+@app.route('/users/<id>', methods = ['GET', 'PUT', 'DELETE'])
 def userById(id):
     if request.method == 'GET':
         if db.getById('users', int(id)) is None:
@@ -71,6 +74,12 @@ def userById(id):
             return create_response(None, 404, "User cannot be found")
         else:
             return create_response(db.updateById('users', id, payload))
+    elif request.method == 'DELETE':
+        if db.getById('users', int(id)) is None:
+            return create_response(None, 404, "User cannot be found")
+        else:
+            db.deleteById('users', int(id))
+            return create_response({}, 200, "User deleted successfully")
 
 # TODO: Implement the rest of the API here!
 
