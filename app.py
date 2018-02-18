@@ -38,18 +38,22 @@ def mirror(name):
     }
     return create_response(data)
 
-@app.route('/users')
+@app.route('/users', methods = ['GET', 'POST'])
 def users():
-    if request.args.get('team') is None:
-        data = {
-            'users': db.get('users')
-        }
-    else:
-        matched = [i for i in db.get('users') if i['team'] == request.args.get('team')]
-        data = {
-            'users': matched
-        }
-    return create_response(data)
+    if request.method == 'GET':
+        if request.args.get('team') is None:
+            data = {
+                'users': db.get('users')
+            }
+        else:
+            matched = [i for i in db.get('users') if i['team'] == request.args.get('team')]
+            data = {
+                'users': matched
+            }
+        return create_response(data)
+    elif request.method == 'POST':
+        payload = {'name': request.form['name'], 'age': request.form['age'], 'team': request.form['team']}
+        return create_response(db.create('users', payload))
 
 @app.route('/users/<id>')
 def userById(id):
