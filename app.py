@@ -55,15 +55,22 @@ def users():
         payload = {'name': request.form['name'], 'age': request.form['age'], 'team': request.form['team']}
         return create_response(db.create('users', payload))
 
-@app.route('/users/<id>')
+@app.route('/users/<id>', methods = ['GET', 'PUT'])
 def userById(id):
-    if db.getById('users', int(id)) is None:
-        return create_response(None, 404, "User cannot be found")
-    else:
-        data = {
-            'user': db.getById('users', int(id))
-        }
-        return create_response(data)
+    if request.method == 'GET':
+        if db.getById('users', int(id)) is None:
+            return create_response(None, 404, "User cannot be found")
+        else:
+            data = {
+                'user': db.getById('users', int(id))
+            }
+            return create_response(data)
+    elif request.method == 'PUT':
+        payload = {'name': request.form['name'], 'age': request.form['age'], 'team': request.form['team']}
+        if db.updateById('users', int(id), payload) is None:
+            return create_response(None, 404, "User cannot be found")
+        else:
+            return create_response(db.updateById('users', id, payload))
 
 # TODO: Implement the rest of the API here!
 
