@@ -45,6 +45,16 @@ def users():
     }
     return create_response(data)
 
+@app.route('/users/<id>')
+def userById(id):
+    if db.getById('users', int(id)) is None:
+        return create_response(None, 404, "User cannot be found")
+    else:
+        data = {
+            'user': db.getById('users', int(id))
+        }
+        return create_response(data)
+
 # TODO: Implement the rest of the API here!
 
 """
