@@ -40,6 +40,10 @@ def mirror(name):
 
 # TODO: Implement the rest of the API here!
 
+@app.route('/users')
+def users():
+    return create_response("testing")
+
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
 """
