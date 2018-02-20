@@ -50,6 +50,14 @@ def users():
     else:
         return create_response(db.get('users'))
 
+@app.route('/users', methods=['POST'])
+def createUser():
+    if not 'name' in request.json or not 'age' in request.json or not 'team' in request.json:
+        return create_response({}, 422, "Missing parameters in body. Must contain name, age, and team.")
+    else:
+        data = db.create('users', request.json)
+        return create_response(data, 201)
+
 @app.route('/users/<user_id>')
 def users_id(user_id):
 	data = db.getById('users', int(user_id))
