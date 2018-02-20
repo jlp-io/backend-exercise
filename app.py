@@ -42,7 +42,13 @@ def mirror(name):
 
 @app.route('/users')
 def users():
-	return create_response(db.get('users'))
+    if 'team' in request.args:
+        data = db.getByTeam('users', request.args.get('team'))
+        if data is None:
+            return create_response({})
+        return create_response(data)
+    else:
+        return create_response(db.get('users'))
 
 @app.route('/users/<user_id>')
 def users_id(user_id):
