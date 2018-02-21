@@ -1,6 +1,5 @@
 from flask import Flask, jsonify, request
 import mockdb.mockdb_interface as db
-import json
 
 app = Flask(__name__)
 
@@ -43,8 +42,11 @@ def mirror(name):
 @app.route('/users')
 def get_all_users():
     team_name = request.args.get('team')
-    if not team_name:
-        return create_response(db.get('users'))
+    if team_name == None:
+        data = {
+            'users': db.get('users')
+        }
+        return create_response(data)
     all_users = db.get('users')
     matched_users = [user for user in all_users if user['team'] == team_name]
     data = {'users': matched_users}
@@ -52,36 +54,42 @@ def get_all_users():
 
 @app.route('/users/<id>')
 def get_user_by_id(id):
-    return create_response(db.getById('users', int(id)))
+    user = db.getById('users', int(id))
+    if user == None:
+        return create_response({}, 404, 'user not found')
+    return create_response(user)
 
 @app.route('/users', methods=['POST'])
 def post_user():
-    name = request.get_json().get('name')
-    age = request.get_json().get('age')
-    team = request.get_json().get('team')
+    request_json = request.get_json()
     data = {}
-    if name and age and team:
-        payload = {'name': name, 'age':age, 'team': team}
+    try:
+        payload = {'name': request_json['name'], 'age':request_json['age'], 'team': request_json['team']}
         data = db.create('users', payload)
         return create_response(data, status=201)
-
-    else:
+    except:
         return create_response(data, 422, 'user name, age and team must be provided')
 
 @app.route('/users/<id>', methods=['PUT'])
 def update_user(id):    
-    name = request.form.get('name')
-    age = request.form.get('age')
-    team = request.form.get('team')
+    request_json = request.get_json()
     data = {}
-    if name:
-        data['name'] = name
-    if age:
-        data['age'] = age
-    if team:
-        data['team'] = team
+
+    try:
+        data['name'] = request_json['name']
+    except:
+        pass
+    try:
+        data['age'] = request_json['age']
+    except:
+        pass
+    try:
+        data['team'] = request_json['team']
+    except:
+        pass
+
     response = db.updateById('users', int(id), data)
-    if not response:
+    if response == None:
         return create_response({}, 404, 'user not found')
     return create_response(response, 201)
 
