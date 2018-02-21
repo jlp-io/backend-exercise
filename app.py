@@ -94,8 +94,9 @@ def update_user(id):
     return create_response(response, 201)
 
 @app.route('/users/<id>', methods=['DELETE'])
-def delete_user(id):    
-    if not db.getById('users', int(id)):
+def delete_user(id):  
+    users =  db.getById('users', int(id))
+    if users == None:
         return create_response({}, 404, 'user not found')
     db.deleteById('users', int(id))
     return create_response({}, 200, 'delete success')
