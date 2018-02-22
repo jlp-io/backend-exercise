@@ -44,6 +44,15 @@ def users():
     data = db.get('users')
     return create_response(data)
 
+@app.route('/users/<userID>')
+def usersID(userID):
+    data = db.get('users')
+    if (int(userID) > len(data) or int(userID) <= 0):
+        return create_response({}, 404, 'No such user exists!')
+    else:
+        user = data[int(userID)-1]
+        return create_response(user)
+
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
 """
