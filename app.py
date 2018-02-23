@@ -45,6 +45,16 @@ def users():
         'users': db.get('users')
     }
     return create_response(data)
+
+@app.route('/users/<id>')
+def users_id(id):
+    user = db.getById('users', int(id))
+    if not user:
+        return create_response({}, 404, "no such user")
+    data = {
+        'user': user
+    }
+    return create_response(data)
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
 """
