@@ -88,7 +88,15 @@ def update_user(id):
     user = db.updateById('users', int(id), data)
     if not user:
         return create_response({}, 404, "no such user")
-    return create_response(user, 201) 
+    return create_response(user, 201)
+
+@app.route('/users/<id>', methods=['DELETE'])
+def delete_user(id):
+    del_user =  db.getById('users', int(id))
+    if not del_user:
+        return create_response({}, 404, 'no such user')
+    db.deleteById('users', int(id))
+    return create_response({}, 200, 'user ' + str(id) + ' deleted')
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
 """
