@@ -73,6 +73,22 @@ def post_user():
     user_data = {'name': json['name'], 'age': json['age'],'team': json['team']}
     data = db.create('users',user_data)
     return create_response(data, 201)
+
+@app.route('/users/<id>', methods=['PUT'])
+def update_user(id):
+    json = request.get_json()
+    data = {}
+    if json:
+        if 'name' in json:
+            data['name'] = json['name']
+        if 'age' in json:
+            data['age'] = json['age']
+        if 'team' in json:
+            data['team'] = json['team']
+    user = db.updateById('users', int(id), data)
+    if not user:
+        return create_response({}, 404, "no such user")
+    return create_response(user, 201) 
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
 """
