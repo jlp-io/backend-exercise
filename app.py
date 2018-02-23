@@ -67,6 +67,15 @@ def usersID(userID):
         user = data[int(userID)-1]
         return create_response(user)
 
+@app.route('/users', methods = ['POST'])
+def createUser():
+    if all(k in request.get_json() for k in ('team', 'name', 'age')):
+        newUser = request.get_json()
+        print(newUser)
+        createdUser = db.create('users', newUser)
+        return create_response(createdUser, 201, 'User created successfully')
+    else:
+        return create_response({}, 422, 'User was not created!')
 
 
 
