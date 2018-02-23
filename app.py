@@ -38,13 +38,27 @@ def mirror(name):
     }
     return create_response(data)
 
-# TODO: Implement the rest of the API here!
-@app.route('/users')
-def users():
-    data = db.get('users')
-    return create_response(data)
 
-@app.route('/users/<userID>')
+
+# TODO: Implement the rest of the API here!
+
+
+@app.route('/users', methods = ['GET'])
+def users():
+    if ('team' in request.args):
+        team = request.args.get('team')
+        data = db.get('users')
+        ret = []
+        for item in data:
+            if (item['team'] == team):
+                ret.append(item)
+
+        return create_response(ret)
+    else:
+        data = db.get('users')
+        return create_response(data)
+
+@app.route('/users/<userID>', methods = ['GET'])
 def usersID(userID):
     data = db.get('users')
     if (int(userID) > len(data) or int(userID) <= 0):
@@ -52,6 +66,10 @@ def usersID(userID):
     else:
         user = data[int(userID)-1]
         return create_response(user)
+
+
+
+
 
 """
 ~~~~~~~~~~~~ END API ~~~~~~~~~~~~
