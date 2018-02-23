@@ -75,8 +75,37 @@ def createUser():
         createdUser = db.create('users', newUser)
         return create_response(createdUser, 201, 'User created successfully')
     else:
-        return create_response({}, 422, 'User was not created!')
+        return create_response({}, 422, 'User couldn\'t be created!')
 
+@app.route('/users/<userID>', methods = ['PUT'])
+def updateUser(userID):
+    request_json = request.get_json()
+    data = {}
+    try:
+        data['name'] = request_json['name']
+    except:
+        pass
+    try:
+        data['age'] = request_json['age']
+    except:
+        pass
+    try:
+        data['team'] = request_json['team']
+    except:
+        pass
+    updatedUser = db.updateById('users', int(userID), data)
+    if (updatedUser is None):
+        return create_response({}, 404, 'No such user!')
+    else:
+        return create_response(updatedUser)
+
+@app.route('/users/<userID>', methods = ['DELETE'])
+def deleteUser(userID):
+    if (db.getById('users',int(userID)) is None):
+        return create_response({}, 404, 'Couldn\'t delete!')
+    else:
+        db.deleteById('users', int(userID))
+        return create_response({}, 200, 'Delete successful!')
 
 
 
